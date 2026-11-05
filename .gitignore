@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+api/__pycache__/
+
+# Large Binaries and Temporary Executables
+*.exe
+cloudflared.exe
+*.zip
+mingit.zip
+
+# Runtime demo outputs
+live_url.txt
+
+# Environments & Secrets
+.env
+.env.*
+*.env
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Deployment & IDE Artifacts
+.vercel
+.vscode/
+.idea/

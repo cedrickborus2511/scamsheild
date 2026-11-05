@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCAM SHIELD | Gemini AI Threat Defense & ScamSaver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="theme-dark font-size-normal">
+
+  <!-- Google Translate Element (Headless DOM integration for all world languages) -->
+  <div id="google_translate_element" style="display: none;"></div>
+
+  <div class="app-container">
+
+    <!-- ========================================================
+         LEFT TASKBAR: TOOLS, SCAMSAVER, LANGUAGE & SETTINGS
+         ======================================================== -->
+    <aside class="sidebar">
+
+      <!-- Brand Section -->
+      <div class="brand-section">
+        <div class="brand-mark">S</div>
+        <div>
+          <h1 class="brand-title">SCAM SHIELD</h1>
+          <p class="brand-tagline" id="brandTagline">Gemini AI Threat Intelligence</p>
+        </div>
+      </div>
+
+      <!-- User Account / Sign-In Status Bar -->
+      <div class="user-auth-bar">
+        <div class="user-status-text">
+          <span class="status-dot"></span>
+          <span id="userAccountStatus">Guest Mode</span>
+        </div>
+        <button class="auth-action-btn" id="authActionBtn" onclick="openLoginModal()">Sign In</button>
+      </div>
+
+      <!-- Searchable Global World Language Picker -->
+      <div class="searchable-language-container" id="languageContainer">
+        <label class="sidebar-heading" id="lblLanguage">Select World Language</label>
+        <button type="button" class="lang-trigger-btn" id="langTriggerBtn" onclick="toggleLanguageDropdown(event)">
+          <span id="currentLangDisplay">English (Global)</span>
+          <span class="dropdown-arrow">▾</span>
+        </button>
+
+        <div class="lang-dropdown-panel" id="langDropdownPanel" style="display: none;">
+          <div class="lang-search-box">
+            <input type="text" id="langSearchInput" class="lang-search-field" placeholder="Search language (e.g. Hindi, Spanish)..." oninput="filterLanguageOptions(this.value)" autocomplete="off">
+          </div>
+          <ul class="lang-options-list" id="langOptionsList">
+            <!-- Populated dynamically and searchable -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Select What to Check -->
+      <div>
+        <h2 class="sidebar-heading" id="lblChooseCheck">Choose What to Check</h2>
+        <ul class="tool-list">
+          <li>
+            <button class="tool-btn active" id="btn-mode-text" onclick="setMode('text')">
+              <span class="tool-marker">1.</span>
+              <span id="navText">Message or Text</span>
+            </button>
+          </li>
+          <li>
+            <button class="tool-btn" id="btn-mode-url" onclick="setMode('url')">
+              <span class="tool-marker">2.</span>
+              <span id="navUrl">Website Link</span>
+            </button>
+          </li>
+          <li>
+            <button class="tool-btn" id="btn-mode-files" onclick="setMode('files')">
+              <span class="tool-marker">3.</span>
+              <span id="navMedia">Media (JPEG, PDF, Audio, Video)</span>
+            </button>
+          </li>
+          <li>
+            <button class="tool-btn" id="btn-mode-screen" onclick="setMode('screen')">
+              <span class="tool-marker">4.</span>
+              <span id="navScreen">Live Screen Share</span>
+            </button>
+          </li>
+          <li>
+            <button class="tool-btn" id="btn-mode-voice" onclick="setMode('voice')">
+              <span class="tool-marker">5.</span>
+              <span id="navVoice">Phone Call Voice Note</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- AI COMPANION "SCAMSAVER" IN LEFT TASKBAR -->
+      <div>
+        <div class="scamsaver-taskbar-card">
+          <div class="scamsaver-header">
+            <div>
+              <h3 class="scamsaver-title">SCAMSAVER</h3>
+              <p class="scamsaver-subtitle" id="scamsaverSub">Gemini AI Safety Companion</p>
+            </div>
+          </div>
+          <p class="scamsaver-intro-text" id="scamsaverIntro">
+            Ask questions anytime about suspicious callers, buyer upgrade requests, or unverified links.
+          </p>
+          <div id="scamsaverHistory" class="scamsaver-chat-viewport">
+            <div class="scamsaver-bubble bot" id="scamsaverWelcomeMsg">
+              Hello! I am SCAMSAVER, your Gemini AI companion. Ask me any question about what someone sent or said to you.
+            </div>
+          </div>
+          <div class="scamsaver-input-row">
+            <input type="text" id="scamsaverInput" class="scamsaver-input-field" placeholder="Ask SCAMSAVER..." onkeypress="if(event.key==='Enter') sendScamsaverMessage()">
+            <button class="scamsaver-send-button" id="btnScamsaverSend" onclick="sendScamsaverMessage()">Ask</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences & Senior Accessibility -->
+      <div>
+        <h2 class="sidebar-heading" id="lblPreferences">Preferences</h2>
+        <div class="settings-box">
+          <div class="setting-row">
+            <span id="lblTextSize">Text Size:</span>
+            <div class="font-btn-group">
+              <button class="font-btn active" onclick="setFontSize('normal')">A</button>
+              <button class="font-btn" onclick="setFontSize('large')">A+</button>
+              <button class="font-btn" onclick="setFontSize('xlarge')">A++</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span id="lblColorTheme">Color Theme:</span>
+            <button class="toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">Light Theme</button>
+          </div>
+
+          <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 0.35rem;">
+            <span id="lblGeminiApiKey">Gemini AI Key (Optional):</span>
+            <input type="password" id="geminiApiKeyInput" class="app-input" style="padding: 0.35rem 0.5rem; font-size: 0.85rem;" placeholder="Paste Gemini API key..." onchange="saveGeminiApiKey(this.value)">
+          </div>
+
+          <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 0.35rem;">
+            <span id="lblAutoReport">Auto-Report Scams:</span>
+            <label style="display: flex; align-items: center; gap: 0.45rem; font-weight: normal; font-size: 0.88rem; cursor: pointer;">
+              <input type="checkbox" id="autoReportCheckbox" checked>
+              <span id="lblSyncCommunity">Sync with community alert system</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ========================================================
+         MAIN CONTENT: SECTOR 1 (FEED INPUT) & SECTOR 2 (AI RECOMMENDATION)
+         (Sectors are Crisp White - High Contrast on Pale Pink Body)
+         ======================================================== -->
+    <main class="main-content">
+
+      <!-- ====================================================
+           SECTOR 1: WHAT WAS SENT TO YOU (INPUT FEED)
+           ==================================================== -->
+      <section class="sector-card">
+        <div class="sector-title-row">
+          <span class="sector-label">SECTOR 1</span>
+          <h2 class="sector-heading" id="inputSectionTitle">Check What Was Sent to You</h2>
+        </div>
+        <p class="sector-subtext" id="inputSectionDesc">
+          Provide the message, link, document, audio, video, or live screen share you received. Personal phone numbers and card details are masked automatically.
+        </p>
+
+        <!-- Mode A: Text or Message -->
+        <div id="input-container-text" class="input-area">
+          <textarea id="mainTextInput" rows="5" class="app-textarea" placeholder="Paste the SMS, WhatsApp message, email, or buyer chat here..."></textarea>
+        </div>
+
+        <!-- Mode B: Web Link -->
+        <div id="input-container-url" class="input-area" style="display: none;">
+          <input type="text" id="mainUrlInput" class="app-input" placeholder="Paste the website address here (e.g. http://power-bill-update.xyz/app.apk)">
+        </div>
+
+        <!-- Mode C: All Media Formats (JPEG, PNG, PDF, Audio, Video) -->
+        <div id="input-container-files" class="input-area" style="display: none;">
+          <div class="media-format-pills">
+            <span class="format-pill">JPEG / PNG Screenshots</span>
+            <span class="format-pill">PDF & DOC Invoices</span>
+            <span class="format-pill">MP3 / WAV Voicemails</span>
+            <span class="format-pill">MP4 / WEBM Screen Recordings</span>
+          </div>
+
+          <div class="file-dropzone" onclick="document.getElementById('fileUploadInput').click()">
+            <h3 class="dropzone-title" id="dropzoneTitle">Click to Select or Drag & Drop Any Media File Here</h3>
+            <p class="dropzone-desc" id="dropzoneDesc">Supports JPEG, PNG, GIF, WEBP, PDF, DOCX, TXT, MP3, WAV, M4A, MP4, and Screen Recordings.</p>
+            <input type="file" id="fileUploadInput" style="display: none;" onchange="handleFileSelected(event)" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.txt,.mp3,.wav,.m4a,.mp4,.webm,.mov">
+          </div>
+          
+          <div id="filePreviewArea" class="media-preview-box" style="display: none;">
+            <p id="filePreviewLabel" style="font-weight: 700; margin-bottom: 0.5rem;"></p>
+            <div id="filePlayerContainer"></div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <label for="fileNotesInput" style="display: block; font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem;" id="lblFileNotes">
+              Any text, amount, or website link seen inside this media (optional):
+            </label>
+            <textarea id="fileNotesInput" rows="2" class="app-textarea" placeholder="e.g. Buyer sent receipt showing Zelle $850, asking me to refund $500 difference..."></textarea>
+          </div>
+        </div>
+
+        <!-- Mode D: Live Screen Share -->
+        <div id="input-container-screen" class="input-area" style="display: none;">
+          <div class="screen-share-card">
+            <div>
+              <h3 class="dropzone-title" id="screenShareTitle">Live Screen Share for Gemini AI Safety Inspection</h3>
+              <p class="dropzone-desc" id="screenShareDesc">Share your screen or browser window showing a suspicious payment page, WhatsApp chat, or video call.</p>
+            </div>
+            
+            <video id="screenShareVideo" autoplay playsinline class="screen-share-video-frame"></video>
+            
+            <div class="screen-share-controls">
+              <button class="btn btn-primary" id="btnStartScreen" onclick="startScreenShare()">
+                <span id="btnStartScreenLabel">Start Screen Share</span>
+              </button>
+              
+              <button class="btn btn-secondary" id="btnCaptureScreen" onclick="captureScreenSnapshot()" style="display: none;">
+                <span id="btnCaptureScreenLabel">Capture & Evaluate Frame</span>
+              </button>
+              
+              <button class="btn btn-secondary" id="btnStopScreen" onclick="stopScreenShare()" style="display: none;">
+                <span id="btnStopScreenLabel">Stop Screen Share</span>
+              </button>
+            </div>
+
+            <div style="width: 100%; margin-top: 0.5rem;">
+              <textarea id="screenNotesInput" rows="2" class="app-textarea" placeholder="Optional notes: e.g. Anydesk remote prompt appeared on my screen, or caller told me to open bank balance..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode E: Phone Call Voice Note -->
+        <div id="input-container-voice" class="input-area" style="display: none;">
+          <textarea id="mainVoiceInput" rows="5" class="app-textarea" placeholder="Describe what the caller said to you over the telephone..."></textarea>
+          <div style="margin-top: 0.75rem;">
+            <button class="btn btn-secondary" id="micBtn" onclick="toggleMicDictation()">
+              <span id="micBtnLabel">Start Microphone to Speak</span>
+            </button>
+            <span id="micStatusText" style="margin-left: 0.75rem; font-size: 0.88rem; color: var(--c-terracotta); font-weight: 600;"></span>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <span style="font-size: 0.92rem; color: var(--text-muted); font-weight: 600;" id="privacyNoticeText">
+            Privacy Protected: Personal phone numbers and financial codes are masked before evaluation.
+          </span>
+          <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-secondary" onclick="clearCurrentInput()" id="btnClear">Clear</button>
+            <button class="btn btn-primary" onclick="submitFeedForInspection()" id="btnCheck">Evaluate Safety</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SECTOR 2: SAFETY RECOMMENDATION REPORT
+           (Crisp White Card, Distinct Outputs per Modality & Advisory Tone)
+           ==================================================== -->
+      <section id="sector-report" class="sector-card sector-report-highlight" style="display: none;">
+        <div class="sector-title-row">
+          <span class="sector-label">SECTOR 2</span>
+          <h2 class="sector-heading" id="reportHeading">Safety Recommendation Report</h2>
+        </div>
+        
+        <!-- Modality-Specific Indicator Bar with Gemini AI Badge -->
+        <div class="modality-indicator-bar">
+          <div>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="lblSourceModality">SOURCE MODALITY:</span>
+            <span id="reportModalityBadge" class="modality-badge">MESSAGE & TEXT VERIFICATION</span>
+          </div>
+          <div class="gemini-badge">
+            <span id="aiEngineLabel">GEMINI AI THREAT ENGINE ACTIVE</span>
+          </div>
+        </div>
+
+        <!-- Repeat Community Warning (if 5+ reports) -->
+        <div id="communityAlertBanner" class="community-alert-box" style="display: none;">
+          <div>
+            <strong id="communityAlertStrong">Repeat Pattern Notice:</strong>
+            <span id="communityAlertCount">Reported 5 or more times from this source pattern.</span>
+          </div>
+          <span style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;" id="lblCommunityAlert">Community Alert</span>
+        </div>
+
+        <!-- Score & Main Verdict (Pure Recommendation Tone) -->
+        <div class="report-header-grid">
+          <div class="score-display-box">
+            <span id="dangerScoreNumber" class="score-number">95%</span>
+            <span class="score-label" id="lblRiskRating">Risk Rating</span>
+          </div>
+          <div>
+            <span id="verdictTag" class="verdict-tag danger">HIGH SCAM RISK DETECTED (RECOMMENDED CAUTION)</span>
+            <p id="simpleExplanation" class="simple-explanation-text">
+              Based on the patterns identified by Gemini AI, our advisory recommendation is to pause and avoid sending funds or credentials.
+            </p>
+          </div>
+        </div>
+
+        <!-- Role Pretended / Who they claim to be -->
+        <div class="role-box">
+          <p class="role-title" id="lblPurportedRole">Purported Identity / Pretended Role:</p>
+          <h3 id="pretendedRoleName" class="role-name">Police Officer or Customs Official</h3>
+          <p class="role-title" style="margin-top: 0.75rem;" id="lblVerificationMethod">Recommended Independent Verification Method:</p>
+          <p id="enquiryGuideText" class="enquiry-guide">
+            It is advisable not to continue communication over the unverified channel. Consider contacting your local municipal department or branch directly using public directory numbers.
+          </p>
+        </div>
+
+        <!-- Modality-Specific Findings & Structural Signs -->
+        <h4 class="section-subhead" id="findingsListTitle">Advisory Findings & Warning Indicators:</h4>
+        <ul id="reasonsList" class="simple-bullet-list danger-items">
+          <!-- Populated dynamically based on input modality & language -->
+        </ul>
+
+        <!-- Recommended Steps for Consideration (Non-Binding Guidance) -->
+        <h4 class="section-subhead" id="recommendationsListTitle">Recommended Steps for Consideration (Non-Binding Guidance):</h4>
+        <ol id="actionStepsList" class="simple-bullet-list">
+          <!-- Populated dynamically based on language -->
+        </ol>
+
+        <!-- Report Button & Read Aloud -->
+        <div class="report-action-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="readAloudReport()">
+              <span id="btnListen">Listen to Recommendation</span>
+            </button>
+            <button class="btn-report" id="manualReportBtn" onclick="submitManualReport()">
+              Log to Community Registry
+            </button>
+          </div>
+          <span id="reportStatusLabel" class="report-status-badge">
+            Pattern recorded in community safety registry
+          </span>
+        </div>
+
+      </section>
+
+      <footer class="app-footer">
+        <p id="footerMain"><strong>SCAM SHIELD</strong> with <strong>SCAMSAVER</strong> — Powered by Gemini AI Threat Intelligence.</p>
+        <p style="margin-top: 0.35rem; font-size: 0.85rem;" id="footerSub">Advisory recommendations are informational. Always verify with official financial institutions.</p>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- ========================================================
+       SIGN IN / LOGIN MODAL
+       ======================================================== -->
+  <div id="loginModal" class="app-modal" style="display: none;">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeLoginModal()">×</button>
+      <div>
+        <h2 class="modal-title" id="loginModalTitle">Sign In to SCAM SHIELD</h2>
+        <p class="modal-subtext" id="loginModalSubtext">Accessible, secure scam protection account</p>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="loginEmailInput" id="lblLoginEmail">Email or Member Name:</label>
+        <input type="text" id="loginEmailInput" class="app-input" placeholder="e.g. senior.member@gmail.com">
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label" for="loginPasswordInput" id="lblLoginPassword">Secret Password:</label>
+        <input type="password" id="loginPasswordInput" class="app-input" placeholder="••••••••">
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem;">
+        <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+          <input type="checkbox" id="rememberMeCheckbox" checked>
+          <span id="lblRememberDevice">Remember this device</span>
+        </label>
+        <a href="javascript:void(0)" onclick="alert('For assistance, you may continue in Guest Mode anytime.')" style="color: var(--c-terracotta); font-weight: 600;" id="lnkHelp">Help</a>
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="performLogin()" id="btnModalSignIn">
+        <span>Sign In</span>
+      </button>
+
+      <div style="text-align: center; margin: 0.25rem 0; font-size: 0.85rem; color: var(--text-muted);">
+        <span>— OR —</span>
+      </div>
+
+      <button class="guest-login-btn" onclick="continueAsGuest()" id="btnModalGuest">
+        <span>1-Click Senior / Guest Sign In</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/mock_scams.js"></script>
+  <script src="/js/app.js"></script>
+  <!-- Google Translate API Initialization -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
